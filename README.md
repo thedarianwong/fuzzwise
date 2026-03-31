@@ -1,3 +1,5 @@
+<img width="2914" height="1440" alt="Fuzzwise Github Banner" src="https://github.com/user-attachments/assets/bc5d0578-6379-4cf4-b68f-bc672fdb95a7" />
+
 # FUZZWISE
 
 **LLM-Augmented Stateful Fuzz Testing for REST APIs**
