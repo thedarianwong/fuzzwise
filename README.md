@@ -19,16 +19,6 @@ Config A is the fully working baseline. Configs B and C are the planned contribu
 
 ---
 
-## Team
-
-| Name | Owns |
-|------|------|
-| **Kevin Shi** | `fuzzwise/spec/`, `fuzzer/engine.py`, `fuzzer/state.py`, `models/` |
-| **Darian Wong** | `fuzzwise/llm/`, `strategies/llm.py`, `fuzzer/explorer.py` (LLM-guided) |
-| **Ryan Kwan** | `fuzzwise/analysis/`, `strategies/dictionary.py`, `docker/`, `tests/`, `data/` |
-
----
-
 ## Setup
 
 ### Prerequisites
