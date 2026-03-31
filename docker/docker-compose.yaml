@@ -1,0 +1,36 @@
+services:
+  petstore:
+    image: swaggerapi/petstore3:unstable
+    ports:
+      - "8080:8080"
+    environment:
+      DISABLE_OAUTH: "1"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/v3/openapi.json"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+
+  gitea:
+    image: gitea/gitea:latest
+    ports:
+      - "3000:3000"
+      - "222:22"
+    environment:
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__security__SECRET_KEY=fuzzwise_secret_key_for_testing
+      - GITEA__service__DISABLE_REGISTRATION=false
+    volumes:
+      - gitea_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  gitea_data:
