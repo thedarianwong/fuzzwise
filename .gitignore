@@ -1,0 +1,93 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-wheel-metadata/
+share/python-wheels/
+*.manifest
+*.spec
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+.installed.cfg
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+pytestdebug.log
+
+# Linting
+.ruff_cache/
+.mypy_cache/
+
+# Runtime outputs (gitignored — created at runtime)
+logs/
+results/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Ollama
+*.gguf
+*.ggml
+*.bin
+modelfiles/
+
+# Docker volumes
+docker/volumes/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Documentations
+docs/
