@@ -8,6 +8,7 @@ Subcommands:
 Usage:
     fuzzwise run --spec data/specs/petstore.yaml --target http://localhost:8080/api/v3
     fuzzwise run --spec data/specs/petstore.yaml --strategy dictionary --explorer bfs
+    fuzzwise run --spec data/specs/petstore.yaml --strategy llm --explorer bfs
     fuzzwise analyze --logs-dir logs/
 """
 
@@ -34,6 +35,7 @@ from fuzzwise.models.types import CampaignConfig, FuzzResult
 from fuzzwise.spec.dependencies import build_dependency_graph
 from fuzzwise.spec.parser import parse_spec
 from fuzzwise.strategies.dictionary import DictionaryStrategy
+from fuzzwise.strategies.llm import LLMStrategy
 
 console = Console()
 
@@ -80,6 +82,30 @@ def build_parser() -> argparse.ArgumentParser:
              "Can be repeated.",
     )
     run_p.add_argument("--verbose", action="store_true")
+    
+    # LLM-specific arguments (for Config B/C)
+    run_p.add_argument(
+        "--llm-model",
+        default=None,
+        help="Ollama model name for LLM strategy (default: qwen2.5:7b)"
+    )
+    run_p.add_argument(
+        "--ollama-host",
+        default=None,
+        help="Ollama server URL (default: http://localhost:11434)"
+    )
+    run_p.add_argument(
+        "--llm-temperature",
+        type=float,
+        default=None,
+        help="LLM temperature 0.0-1.0 (default: 0.8)"
+    )
+    run_p.add_argument(
+        "--llm-timeout",
+        type=float,
+        default=None,
+        help="LLM request timeout in seconds (default: 30.0)"
+    )
 
     # ---- analyze ----
     ana_p = sub.add_parser("analyze", help="Analyze campaign logs")
@@ -159,22 +185,46 @@ def cmd_run(args: argparse.Namespace) -> int:
         console.print(f"[red]Error during setup:[/] {exc}")
         return 1
 
-    # ---- Build strategy and explorer ----
+    # ---- Build strategy ----
     if args.strategy == "dictionary":
         strategy = DictionaryStrategy(
             dictionaries_dir=args.dictionaries_dir,
             seed=args.seed,
         )
+    elif args.strategy == "llm":
+        # Get LLM config from args or env
+        llm_model = getattr(args, 'llm_model', None) or os.getenv('LLM_MODEL', 'qwen2.5:7b')
+        ollama_host = getattr(args, 'ollama_host', None) or os.getenv('OLLAMA_HOST', 'http://localhost:11434')
+        llm_temperature = float(getattr(args, 'llm_temperature', None) or os.getenv('LLM_TEMPERATURE', '0.8'))
+        llm_timeout = float(getattr(args, 'llm_timeout', None) or os.getenv('LLM_TIMEOUT', '30.0'))
+        
+        # Show LLM config if verbose
+        if args.verbose:
+            console.print(f"[dim]LLM config: model={llm_model}, host={ollama_host}, temp={llm_temperature}[/]")
+        
+        strategy = LLMStrategy(
+            dictionaries_dir=args.dictionaries_dir,
+            seed=args.seed,
+            model=llm_model,
+            ollama_host=ollama_host,
+            temperature=llm_temperature,
+            timeout_seconds=llm_timeout,
+            fallback_to_dictionary=True,
+        )
     else:
-        console.print("[red]LLM strategy not yet implemented — use --strategy dictionary[/]")
+        console.print(f"[red]Unknown strategy: {args.strategy}[/]")
         return 1
 
+    # ---- Build explorer ----
     if args.explorer == "bfs":
         explorer = BFSExplorer(max_sequence_length=args.max_sequence_length, bfs_fast=False)
     elif args.explorer == "bfs_fast":
         explorer = BFSExplorer(max_sequence_length=args.max_sequence_length, bfs_fast=True)
-    else:
+    elif args.explorer == "llm_guided":
         console.print("[red]LLM-guided explorer not yet implemented — use --explorer bfs[/]")
+        return 1
+    else:
+        console.print(f"[red]Unknown explorer: {args.explorer}[/]")
         return 1
 
     # ---- Run campaign ----
@@ -205,6 +255,37 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     # ---- Print results ----
     _print_results(result)
+    
+    # If using LLM strategy, print metrics
+    if args.strategy == "llm" and isinstance(strategy, LLMStrategy):
+        console.print()
+        console.rule("[bold cyan]LLM Metrics")
+        metrics = strategy.get_metrics()
+        metrics_table = Table(show_header=False, box=None, padding=(0, 2))
+        metrics_table.add_column("Metric", style="cyan")
+        metrics_table.add_column("Value")
+        
+        # Format metrics nicely
+        metric_display = {
+            "llm_calls": "LLM Calls",
+            "llm_successes": "LLM Successes",
+            "llm_failures": "LLM Failures",
+            "fallback_uses": "Dictionary Fallbacks",
+            "cache_hits": "Cache Hits",
+            "unique_values_generated": "Unique Values Generated",
+            "model": "Model",
+            "ollama_available": "Ollama Available",
+        }
+        
+        for key, display_name in metric_display.items():
+            if key in metrics:
+                value = metrics[key]
+                if isinstance(value, bool):
+                    value = "✓" if value else "✗"
+                metrics_table.add_row(display_name, str(value))
+        
+        console.print(metrics_table)
+    
     console.print(f"\n[dim]Log:[/] {log_path}")
     console.print(f"[dim]Result:[/] {log_path.with_suffix('.result.json')}")
     return 0
