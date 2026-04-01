@@ -9,7 +9,7 @@ Usage:
     fuzzwise run --spec data/specs/petstore.yaml --target http://localhost:8080/api/v3
     fuzzwise run --spec data/specs/petstore.yaml --strategy dictionary --explorer bfs
     fuzzwise run --spec data/specs/petstore.yaml --strategy llm --explorer bfs
-    fuzzwise run --spec data/specs/petstore.yaml --strategy llm_pregenerated --llm-payloads data/llm_payloads/llm_payloads_qwen2_5_7b.json
+    fuzzwise run --spec data/specs/petstore.yaml --strategy llm_pregenerated --llm-payloads data/llm_payloads/llm_payloads_qwen2.5_7b.json
     fuzzwise analyze --logs-dir logs/
 """
 
