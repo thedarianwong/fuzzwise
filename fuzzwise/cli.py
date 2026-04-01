@@ -9,6 +9,7 @@ Usage:
     fuzzwise run --spec data/specs/petstore.yaml --target http://localhost:8080/api/v3
     fuzzwise run --spec data/specs/petstore.yaml --strategy dictionary --explorer bfs
     fuzzwise run --spec data/specs/petstore.yaml --strategy llm --explorer bfs
+    fuzzwise run --spec data/specs/petstore.yaml --strategy llm_pregenerated --llm-payloads data/llm_payloads/llm_payloads_qwen2_5_7b.json
     fuzzwise analyze --logs-dir logs/
 """
 
@@ -36,6 +37,7 @@ from fuzzwise.spec.dependencies import build_dependency_graph
 from fuzzwise.spec.parser import parse_spec
 from fuzzwise.strategies.dictionary import DictionaryStrategy
 from fuzzwise.strategies.llm import LLMStrategy
+from fuzzwise.strategies.llm_pregenerated import LLMPregeneratedStrategy
 
 console = Console()
 
@@ -57,7 +59,7 @@ def build_parser() -> argparse.ArgumentParser:
     run_p.add_argument("--spec", required=True, help="Path to OpenAPI YAML/JSON spec")
     run_p.add_argument("--target", default=None, help="Target API base URL")
     run_p.add_argument(
-        "--strategy", choices=["dictionary", "llm"], default="dictionary",
+        "--strategy", choices=["dictionary", "llm", "llm_pregenerated"], default="dictionary",
         help="Payload generation strategy",
     )
     run_p.add_argument(
@@ -105,6 +107,11 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=None,
         help="LLM request timeout in seconds (default: 30.0)"
+    )
+    run_p.add_argument(
+        "--llm-payloads",
+        default=None,
+        help="Path to pre-generated LLM payloads JSON file (for llm_pregenerated strategy)"
     )
 
     # ---- analyze ----
@@ -211,6 +218,31 @@ def cmd_run(args: argparse.Namespace) -> int:
             timeout_seconds=llm_timeout,
             fallback_to_dictionary=True,
         )
+    elif args.strategy == "llm_pregenerated":
+        from fuzzwise.strategies.llm_pregenerated import LLMPregeneratedStrategy
+        
+        if not args.llm_payloads:
+            console.print("[red]Error: --llm-payloads required for llm_pregenerated strategy[/]")
+            return 1
+        
+        payloads_path = Path(args.llm_payloads)
+        if not payloads_path.exists():
+            console.print(f"[red]Error: Payloads file not found: {payloads_path}[/]")
+            return 1
+        
+        strategy = LLMPregeneratedStrategy(
+            payloads_path=payloads_path,
+            seed=args.seed,
+        )
+        console.print(f"[green]✓[/] Loaded pre-generated LLM payloads from {payloads_path}")
+        
+        # Show stats if verbose
+        if args.verbose:
+            stats = strategy.get_stats()
+            console.print(f"[dim]  Parameters: {stats['total_parameters']}[/]")
+            console.print(f"[dim]  Total payloads: {stats['total_payloads']:,}[/]")
+            if 'model' in stats['metadata']:
+                console.print(f"[dim]  Model: {stats['metadata']['model']}[/]")
     else:
         console.print(f"[red]Unknown strategy: {args.strategy}[/]")
         return 1
@@ -285,6 +317,22 @@ def cmd_run(args: argparse.Namespace) -> int:
                 metrics_table.add_row(display_name, str(value))
         
         console.print(metrics_table)
+    
+    # If using pre-generated strategy, show stats
+    if args.strategy == "llm_pregenerated" and isinstance(strategy, LLMPregeneratedStrategy):
+        console.print()
+        console.rule("[bold cyan]Pre-generated LLM Payloads")
+        stats = strategy.get_stats()
+        stats_table = Table(show_header=False, box=None, padding=(0, 2))
+        stats_table.add_column("Metric", style="cyan")
+        stats_table.add_column("Value")
+        stats_table.add_row("Parameters with payloads", str(stats['total_parameters']))
+        stats_table.add_row("Total payloads", f"{stats['total_payloads']:,}")
+        if 'model' in stats['metadata']:
+            stats_table.add_row("Model", stats['metadata']['model'])
+        if 'num_payloads_per_param' in stats['metadata']:
+            stats_table.add_row("Payloads per parameter", str(stats['metadata']['num_payloads_per_param']))
+        console.print(stats_table)
     
     console.print(f"\n[dim]Log:[/] {log_path}")
     console.print(f"[dim]Result:[/] {log_path.with_suffix('.result.json')}")
