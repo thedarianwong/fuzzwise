@@ -14,10 +14,10 @@ FUZZWISE reads an OpenAPI 3.0 specification, infers producer-consumer dependenci
 | Config | Payload Strategy | Exploration | Status |
 |--------|-----------------|-------------|--------|
 | **A** | Static dictionary (RESTler-style) | BFS | **Implemented** |
-| **B** | LLM-generated | BFS | Not yet implemented |
-| **C** | LLM-generated | LLM-guided | Not yet implemented |
+| **B** | LLM pre-generated (Qwen 2.5 7B via Ollama) | BFS | **Implemented** |
+| **C** | LLM-generated + adaptive | LLM-guided | Planned |
 
-Config A is the fully working baseline. Configs B and C are the planned contributions — running `--strategy llm` or `--explorer llm_guided` will exit with an error until implemented.
+Config A and B are fully working. Config C is the planned stretch goal.
 
 ---
 
@@ -90,17 +90,80 @@ ollama pull qwen2.5:7b
 
 ## Running the Fuzzer
 
-### Basic usage
+### Config A — static dictionary baseline
 
 ```bash
-# Config A — static dictionary payloads + BFS (fully working)
 fuzzwise run \
   --spec data/specs/petstore.yaml \
   --target http://localhost:8080/api/v3 \
   --strategy dictionary \
   --explorer bfs \
-  --config-label config_a_baseline
+  --config-label A
 ```
+
+### Config B — LLM pre-generated payloads
+
+Config B requires a one-time pre-generation step before running the campaign.
+Two variants are available — both produce identical campaign speed to Config A.
+
+#### Step 1 — Start Ollama and pull the model (first time only)
+
+```bash
+ollama serve &
+ollama pull qwen2.5:7b
+```
+
+#### Step 2 — Pre-generate payloads
+
+**Iterative** (higher value diversity, ~85 min on M1 / ~6h on older hardware):
+```bash
+python -m fuzzwise.llm.pregenerate \
+  --spec data/specs/petstore.yaml \
+  --model qwen2.5:7b \
+  --num-payloads 20 \
+  --output-dir data/llm_payloads
+```
+
+**Batch** (faster, ~6 min on any hardware, slightly lower parse rate):
+```bash
+python -m fuzzwise.llm.pregenerate_batch \
+  --spec data/specs/petstore.yaml \
+  --model qwen2.5:7b \
+  --num-payloads 20 \
+  --output-dir data/llm_payloads
+```
+
+Both scripts save a JSON payload file to `data/llm_payloads/`. Pre-generated payload
+files for Petstore are already committed to the repo — skip this step if they exist.
+
+#### Step 3 — Run the campaign
+
+```bash
+# Using iterative payloads
+fuzzwise run \
+  --spec data/specs/petstore.yaml \
+  --target http://localhost:8080/api/v3 \
+  --strategy llm_pregenerated \
+  --llm-payloads data/llm_payloads/llm_payloads_qwen2.5_7b.json \
+  --config-label B_iterative
+
+# Using batch payloads
+fuzzwise run \
+  --spec data/specs/petstore.yaml \
+  --target http://localhost:8080/api/v3 \
+  --strategy llm_pregenerated \
+  --llm-payloads data/llm_payloads/llm_payloads_qwen2.5_7b_batch.json \
+  --config-label B_batch
+```
+
+### Run all configs and compare
+
+```bash
+chmod +x run_comparison.sh && ./run_comparison.sh
+```
+
+This runs Config A, B_iterative, and B_batch in sequence, then writes a comparison
+table to `results/petstore_comparison.md`.
 
 ### All flags
 
@@ -209,8 +272,14 @@ fuzzwise/
 │   │   └── state.py            # Mutable campaign state (resource pool, seqSet)
 │   ├── strategies/
 │   │   ├── base.py             # Abstract interfaces
-│   │   └── dictionary.py       # Config A: static dictionary payloads
-│   ├── llm/                    # Config B/C stubs — not yet implemented
+│   │   ├── dictionary.py       # Config A: static dictionary payloads
+│   │   ├── llm.py              # Config B: online LLM strategy (per-request)
+│   │   └── llm_pregenerated.py # Config B: pre-generated payload strategy
+│   ├── llm/
+│   │   ├── client.py           # Ollama HTTP wrapper
+│   │   ├── prompts.py          # Prompt templates (Config B render + Config C stubs)
+│   │   ├── pregenerate.py      # Iterative pre-generation script (1 call/value)
+│   │   └── pregenerate_batch.py # Batch pre-generation script (1 call/param)
 │   └── analysis/               # Analysis stubs — not yet implemented
 ├── data/
 │   ├── specs/                  # OpenAPI spec files (petstore.yaml, petstore.json)
