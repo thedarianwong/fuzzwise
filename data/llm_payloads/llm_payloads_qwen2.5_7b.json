@@ -1,0 +1,1530 @@
+{
+  "metadata": {
+    "model": "qwen2.5:7b",
+    "num_payloads_per_param": 20,
+    "spec": "data/specs/petstore.yaml",
+    "total_parameters": 51,
+    "total_payloads": 1020,
+    "successes": 1040,
+    "failures": 0,
+    "success_rate": 100.0
+  },
+  "payloads": {
+    "addPet::category": [
+      {
+        "id": 1,
+        "name": " Toys "
+      },
+      {
+        "id": 999999999999999
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 999999999999999
+      },
+      "category\": \"' OR '1'='1",
+      {
+        "id": 1,
+        "name": "TestCategory"
+      },
+      {
+        "id": 999999999999999999
+      },
+      {
+        "name": "' OR '1'='1"
+      },
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 9223372036854775807
+      },
+      {
+        "name": "' OR '1'='1",
+        "description": "<script>alert(1)</script>",
+        "parent": "../../../etc/passwd",
+        "command": "; rm -rf /"
+      },
+      {
+        "id": 1,
+        "name": "TestCategory"
+      },
+      {
+        "id": 999999999999999
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "Toys"
+      },
+      {
+        "id": 999999999999999
+      },
+      {
+        "name": "' OR '1'='1",
+        "description": "<script>alert(1)</script>",
+        "path": "../../../etc/passwd",
+        "command": "; rm -rf /"
+      },
+      {
+        "id": 1,
+        "name": ">Toys"
+      },
+      {
+        "id": 9223372036854775807
+      }
+    ],
+    "addPet::id": [
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      42,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "addPet::name": [
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Bella",
+      "verylongstringthatexceedsthecharacterlimitforthenamet parameter",
+      "' OR '1'='1",
+      "Buddy",
+      ""
+    ],
+    "addPet::photoUrls": [
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.png"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1,<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.jpg"
+      ],
+      [],
+      "['\\' OR \\'1\\'=\\'1', '&lt;script&gt;alert(1)&lt;/script&gt;', '../../../etc/passwd', '; rm -rf /']",
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.png"
+      ],
+      "[\"\", \"a\".repeat(301)]",
+      "' OR '1'='1,<script>alert(1)</script>,../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1,<script>alert(1)</script>,../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1,<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ],
+      "['; SELECT * FROM pets WHERE 1=1; -- ', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        "https://example.com/pet1.jpg",
+        "https://example.com/pet2.png"
+      ],
+      "[\"\", \"a\".repeat(256)]"
+    ],
+    "addPet::status": [
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "'status'' OR ''1''=''1\"",
+      "active",
+      ""
+    ],
+    "addPet::tags": [
+      [
+        "fun",
+        "playful"
+      ],
+      "[[], [\"edge\"], [\"!\"*256]]",
+      "['\" OR \"1\"\"=\"1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "string"
+        }
+      ],
+      "[[], [\"edge_case\"], [\"!\"\u84ec\u52c3\u53d1\u5c55\u4e2d@\"]]",
+      "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        },
+        {
+          "id": 2,
+          "name": "tag2"
+        }
+      ],
+      [
+        {},
+        null,
+        [],
+        "invalid",
+        "",
+        "\r\n\t ",
+        {
+          "id": 999,
+          "name": "\u0000"
+        },
+        {
+          "id": -1,
+          "name": ""
+        }
+      ],
+      [
+        "' OR '1'='1",
+        "<script>alert(1)</script>",
+        "../../../etc/passwd",
+        "; rm -rf /"
+      ],
+      [
+        {
+          "id": 1,
+          "name": "work"
+        }
+      ],
+      [
+        {},
+        {},
+        {},
+        {}
+      ],
+      "['\\'' OR ''='1', '<script>alert(1)</script>', '../../../etc/passwd;', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "string"
+        }
+      ],
+      [
+        {},
+        {
+          "id": 65535,
+          "name": ""
+        }
+      ],
+      "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "string"
+        }
+      ],
+      [],
+      "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd;', 'rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [
+        "boundary_test"
+      ]
+    ],
+    "updatePet::category": [
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 0
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 9223372036854775807
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "Toys"
+      },
+      {
+        "id": 999999999999999
+      },
+      "{\n  \"name\": \"' OR '1'='1\",\n  \"description\": \"<script>alert(1)</script>\",\n  \"path\": \"../../../etc/passwd\",\n  \"; rm -rf /\"\n}",
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 9223372036854775807
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "Toy"
+      },
+      {
+        "id": 9223372036854775807
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "TestCategory"
+      },
+      {
+        "id": null
+      },
+      {
+        "name": "' OR '1'='1",
+        "id": 1
+      },
+      {
+        "id": 1,
+        "name": "TestCategory"
+      },
+      {
+        "id": 9223372036854775807
+      }
+    ],
+    "updatePet::id": [
+      123,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "updatePet::name": [
+      "Bella",
+      "",
+      "' OR '1'='1",
+      "Bella",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      ""
+    ],
+    "updatePet::photoUrls": [
+      [
+        "http://example.com/pet1.jpg",
+        "http://example.com/pet2.jpg"
+      ],
+      "[\"\", \"a\".repeat(256), \"/very_long_file_name_with_special_chars@#%^&*()_+=-{}|<>?:\\\"'.,;\"]",
+      "' OR '1'='1,<script>alert(1)</script>,../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/petphoto1.jpg",
+        "http://example.com/petphoto2.jpg"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1,<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      [
+        "https://example.com/pet1.jpg",
+        "https://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ],
+      "['\\' OR \\'1\\'=\\'1', '&lt;script&gt;alert(1)&lt;/script&gt;', '../../../etc/passwd', '; rm -rf /']",
+      [
+        "https://example.com/pet1.jpg",
+        "https://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1,<script>alert(1)</script>,../../../etc/passwd; rm -rf /",
+      [
+        "http://example.com/petphoto1.jpg",
+        "http://example.com/petphoto2.jpg"
+      ],
+      "[\"\", \"a\".repeat(301)]",
+      "['\\' OR \\'1\\'=\\'1', '&lt;script&gt;alert(1)&lt;/script&gt;', '../../etc/passwd', '; rm -rf /']",
+      [
+        "https://example.com/petphoto1.jpg",
+        "https://example.com/petphoto2.jpg"
+      ],
+      "[\"\", \"a\".repeat(256), \".Special|chars&\"]",
+      "' OR '1'='1,<script>alert(1)</script>,../../../etc/passwd; rm -rf /",
+      [
+        "https://example.com/pet1.jpg",
+        "https://example.com/pet2.jpg"
+      ],
+      [
+        ""
+      ]
+    ],
+    "updatePet::status": [
+      "active",
+      "empty",
+      "' OR '1'='1",
+      "active",
+      "null",
+      "' OR '1'='1",
+      "active",
+      "invalid_status",
+      "' OR '1'='1",
+      "active",
+      "null",
+      "' OR '1'='1",
+      "active",
+      "empty_string",
+      "' OR '1'='1",
+      "active",
+      "null",
+      "' OR '1'='1",
+      "available",
+      "empty_string"
+    ],
+    "updatePet::tags": [
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [
+        {
+          "id": 65535,
+          "name": " EdgeCase"
+        }
+      ],
+      [
+        "' OR '1'=%27"
+      ],
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [
+        "edge_case"
+      ],
+      "['\\' OR \\'1\\'=\\'1']",
+      [
+        {
+          "id": 1,
+          "name": "string"
+        }
+      ],
+      [
+        "max",
+        "limit"
+      ],
+      [
+        "' OR '1'='1",
+        "<script>alert(1)</script>",
+        "../..//etc/passwd",
+        "; rm -rf /"
+      ],
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [],
+      "['\\' OR \\'1=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [
+        {},
+        null,
+        "edge"
+      ],
+      "['\\' OR \\'1\\'=\\'1']",
+      [
+        {
+          "id": 1,
+          "name": "string"
+        }
+      ],
+      [
+        {},
+        null
+      ],
+      "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "tag1"
+        }
+      ],
+      [
+        "edge_case"
+      ]
+    ],
+    "findPetsByStatus::status": [
+      "available",
+      "",
+      "' OR '1\u2019=\u20191",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      "empty"
+    ],
+    "findPetsByTags::tags": [
+      [
+        "playful",
+        "adorable"
+      ],
+      [
+        "edge_case"
+      ],
+      "tags[]='' OR ''='1",
+      [
+        "playful",
+        "friendly"
+      ],
+      [
+        ""
+      ],
+      "tags[]='' OR ''='1",
+      [
+        "fun",
+        "playful"
+      ],
+      [
+        " "
+      ],
+      "tags%5B%5D=%27+OR+%271%27%3D%271",
+      [
+        "playful",
+        "adventurous"
+      ],
+      [
+        ""
+      ],
+      "'tags%3D%27+OR+%271%27%3D%271",
+      [
+        "playful",
+        "brown"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1",
+      [
+        "fun",
+        "playful"
+      ],
+      [
+        ""
+      ],
+      "' OR '1'='1",
+      [
+        "playful",
+        "adorable"
+      ],
+      [
+        ""
+      ]
+    ],
+    "getPetById::petId": [
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "updatePetWithForm::petId": [
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "updatePetWithForm::name": [
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      "",
+      "' OR '1'='1",
+      "Buddy",
+      ""
+    ],
+    "updatePetWithForm::status": [
+      "active",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "active",
+      "",
+      "' OR '1'='1",
+      "available",
+      "",
+      "' OR '1'='1",
+      "available",
+      ""
+    ],
+    "deletePet::petId": [
+      12345,
+      -2147483649,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -1,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "deletePet::api_key": [
+      "abc123",
+      "",
+      "' OR '1'='1",
+      "myapikey123",
+      "",
+      "' OR '1'='1",
+      "abc123",
+      "",
+      "' OR '1'='1",
+      "abc123",
+      "",
+      "' OR '1'='1",
+      "abc123",
+      "",
+      "' OR '1'='1",
+      "abc123",
+      "",
+      "' OR '1'='1",
+      "12345apikey123",
+      ""
+    ],
+    "uploadFile::petId": [
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483649,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483649,
+      "' OR '1'='1",
+      12345,
+      -2147483649,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "uploadFile::additionalMetadata": [
+      "metadataExample123",
+      "",
+      "' OR '1'='1",
+      "metadata123",
+      "",
+      "'; -- ' OR '1'=1 AND additionalMetadata='safeValue",
+      "metadata123",
+      "",
+      "' OR '1'='1<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      "metadata123",
+      "",
+      "' OR '1'='1<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      "metadata123",
+      "",
+      "' OR '1'='1<script>alert(1)</script>../../../etc/passwd; rm -rf /",
+      "metadata123",
+      "",
+      "' OR '1'='1",
+      "metadata123",
+      ""
+    ],
+    "placeOrder::complete": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "placeOrder::id": [
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      -2147483648,
+      "' OR '1'='1",
+      123,
+      2147483647,
+      "' OR '1'='1",
+      123,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "placeOrder::petId": [
+      123,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -1,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "placeOrder::quantity": [
+      5,
+      -2,
+      "' OR '1'='1",
+      5,
+      -1,
+      "' OR '1'='1",
+      5,
+      -2,
+      "' OR '1'='1",
+      5,
+      -2147483649,
+      "' OR '1'='1",
+      5,
+      -2,
+      "' OR '1'='1",
+      5,
+      -1,
+      "' OR '1'='1",
+      5,
+      -1
+    ],
+    "placeOrder::shipDate": [
+      "2023-10-05",
+      "2999-12-31T23:59:59Z",
+      "' OR '1'='1",
+      "2023-10-05",
+      "\"2999-12-31\"T23:59:59",
+      "' OR '1\u2019=\u20191 --",
+      "2023-10-05",
+      "2999-12-31",
+      "' OR '1'='1",
+      "2023-10-05",
+      "2999-12-31T23:59:59Z",
+      "' OR '1'='1",
+      "2023-10-05",
+      "2999-12-31T23:59:59",
+      "' OR '1'='1",
+      "2023-10-05",
+      "2999-12-31T23:59:59Z",
+      "' OR '1'='1",
+      "2023-10-05",
+      "2999-12-31T23:59:59"
+    ],
+    "placeOrder::status": [
+      "pending",
+      "",
+      "' OR '1'='1",
+      "placed",
+      "",
+      "' OR '1'='1",
+      "pending",
+      "",
+      "' OR '1'='1",
+      "pending",
+      "",
+      "' OR '1'='1",
+      "pending",
+      "",
+      "' OR '1'='1",
+      "placed",
+      "",
+      "' OR '1'='1",
+      "pending",
+      ""
+    ],
+    "getOrderById::orderId": [
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "deleteOrder::orderId": [
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -1,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -1,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      -2147483648
+    ],
+    "createUser::email": [
+      "test@example.com",
+      "email: @example.com",
+      "' OR '1'='1",
+      "test@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "test@example.com",
+      "",
+      "' OR '1'='1",
+      "test@example.com",
+      "",
+      "' OR '1'='1",
+      "test@example.com",
+      "",
+      "' OR '1'='1",
+      "test@example.com",
+      ""
+    ],
+    "createUser::firstName": [
+      "John",
+      "firstName: {}",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "firstName: {}",
+      "' OR '1'='1",
+      "John",
+      ""
+    ],
+    "createUser::id": [
+      123,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647
+    ],
+    "createUser::lastName": [
+      "Li",
+      "",
+      "' OR '1'='1",
+      "Smith",
+      "",
+      "' OR '1'='1",
+      "smith",
+      "",
+      "' OR '1'='1",
+      "Smith",
+      "lastName: {}",
+      "' OR '1'='1",
+      "Smith",
+      "",
+      "' OR '1'='1",
+      "Smith",
+      "",
+      "' OR '1'='1",
+      "Doe",
+      ""
+    ],
+    "createUser::password": [
+      "test123",
+      "",
+      "' OR '1'='1",
+      "testpassword123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "testpassword123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      ""
+    ],
+    "createUser::phone": [
+      "1234567890",
+      "+9999999999999999999999999999999",
+      "' OR '1'='1",
+      "1234567890",
+      "+1234567890",
+      "' OR '1'='1",
+      "1234567890",
+      "+1(999)999-9999",
+      "' OR '1'='1",
+      "1234567890",
+      "+1234567890",
+      "' OR '1'='1",
+      "1234567890",
+      "+9999999999999999999999999999999",
+      "' OR '1'='1",
+      "1234567890",
+      "phone: +9999999999999",
+      "' OR '1'='1",
+      "1234567890",
+      "+1(999)999-9999"
+    ],
+    "createUser::userStatus": [
+      10,
+      2147483647,
+      "' OR '1'='1",
+      1,
+      2147483647,
+      "' OR '1'='1",
+      10,
+      2147483647,
+      "' OR '1'='1",
+      10,
+      2147483647,
+      "' OR '1'='1",
+      1,
+      2147483647,
+      "' OR '1'='1",
+      10,
+      2147483647,
+      "' OR '1'='1",
+      1,
+      2147483647
+    ],
+    "createUser::username": [
+      "test_user123",
+      "edge@#%",
+      "' OR '1'='1",
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "edge_case__!@#$%^&*()",
+      "' OR '1'='1",
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "test_user123",
+      ""
+    ],
+    "createUsersWithListInput::_body": [
+      [
+        {
+          "name": "John Doe",
+          "age": 30
+        }
+      ],
+      "[[], [null], [\"edge\"], [\"a\".repeat(1025)]]",
+      "['\\' OR \\'1\\'=\\'1', '&lt;script&gt;alert(1)&lt;/script&gt;', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "name": "John Doe",
+          "age": 30
+        }
+      ],
+      [
+        null,
+        "",
+        "a",
+        [
+          {}
+        ],
+        [
+          []
+        ]
+      ],
+      "['\\'' OR ''1''=''1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "John Doe"
+        }
+      ],
+      [
+        [],
+        [
+          null
+        ],
+        [
+          true
+        ]
+      ],
+      "['\\'' OR ''1''=''1', '<script>alert(1)</script>', '../../../../../etc/passwd', '; rm -rf /']",
+      [],
+      [
+        null,
+        "",
+        "a",
+        "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+      ],
+      "['\\' OR \\'1\\'=\\'1', '&lt;script&gt;alert(1)&lt;/script&gt;', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "id": 1,
+          "name": "John Doe"
+        }
+      ],
+      "[[], [max+1], [\"\", \"special_chars!@#\"], [null]]",
+      "['\\'' OR \\'1\\'=\\'1\\', \\'<script>alert(1)</script>\\', \\'../../../etc/passwd\\', \\'; rm -rf /\\']",
+      [
+        {
+          "name": "John Doe",
+          "age": 30
+        }
+      ],
+      [
+        [],
+        [
+          null
+        ],
+        [
+          "",
+          " ",
+          "\t"
+        ],
+        [
+          Infinity,
+          -Infinity
+        ]
+      ],
+      "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
+      [
+        {
+          "name": "John Doe",
+          "age": 30
+        }
+      ],
+      []
+    ],
+    "loginUser::username": [
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "test_user123",
+      "",
+      "' OR '1'='1",
+      "test_user",
+      "",
+      "' OR '1'='1",
+      "testUser123",
+      "",
+      "' OR '1'='1",
+      "testUser123",
+      "",
+      "' OR '1'='1",
+      "testUser123",
+      "",
+      "' OR '1'='1",
+      "testUser123",
+      ""
+    ],
+    "loginUser::password": [
+      "testpwd123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "testpassword123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "testpassword123",
+      ""
+    ],
+    "getUserByName::username": [
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe123",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "edge_case_user_"
+    ],
+    "updateUser::username": [
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "edge_case_user@",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      ""
+    ],
+    "updateUser::email": [
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "test@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      "",
+      "' OR '1'='1",
+      "john.doe@example.com",
+      ""
+    ],
+    "updateUser::firstName": [
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John Doe",
+      "",
+      "' OR '1'='1",
+      "John",
+      "",
+      "' OR '1'='1",
+      "John",
+      ""
+    ],
+    "updateUser::id": [
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      42,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      -2147483648,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647,
+      "' OR '1'='1",
+      12345,
+      2147483647
+    ],
+    "updateUser::lastName": [
+      "Doe",
+      "",
+      "' OR '1'='1",
+      "Doe",
+      "",
+      "' OR '1'='1",
+      "Doe",
+      "",
+      "' OR '1'='1",
+      "Doe",
+      "",
+      "' OR '1'='1",
+      "Smith",
+      "",
+      "' OR '1'='1",
+      "Doe",
+      "",
+      "' OR '1'='1",
+      "Li",
+      ""
+    ],
+    "updateUser::password": [
+      "newpassword123",
+      "",
+      "' OR '1'='1",
+      "newpassword123",
+      "",
+      "' OR '1'='1",
+      "newPassword123",
+      "",
+      "' OR '1'='1",
+      "newPassword123",
+      "",
+      "' OR '1'='1",
+      "test123",
+      "",
+      "' OR '1'='1",
+      "newPassword123",
+      "",
+      "' OR '1'='1",
+      "newPassword123",
+      ""
+    ],
+    "updateUser::phone": [
+      "1234567890",
+      "",
+      "' OR '1'='1",
+      "1234567890",
+      "+19999999999",
+      "' OR '1'='1",
+      "1234567890",
+      "+1(999)999-9999",
+      "' OR '1'='1",
+      "1234567890",
+      "++919876543210",
+      "' OR '1'='1",
+      "1234567890",
+      "\u7535\u8bdd\u53f7\u7801: +9999999999999",
+      "' OR '1'='1",
+      "1234567890",
+      "+9999999999999999999999999999999",
+      "' OR '1'='1",
+      "1234567890",
+      ""
+    ],
+    "updateUser::userStatus": [
+      42,
+      "Integer.MAX_VALUE + 1",
+      "' OR '1'='1",
+      42,
+      "INT_MAX + 1",
+      "' OR '1'='1",
+      42,
+      -2147483648,
+      "' OR '1'='1",
+      42,
+      "Integer.MIN_VALUE",
+      "' OR '1'='1",
+      42,
+      2147483647,
+      "' OR '1'='1",
+      42,
+      2147483647,
+      "' OR '1'='1",
+      10,
+      "INT_MAX + 1"
+    ],
+    "deleteUser::username": [
+      "john_doe",
+      "boundary_case_user",
+      "' OR '1'='1",
+      "john_doe",
+      "edge_case_user",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      "",
+      "' OR '1'='1",
+      "john_doe",
+      ""
+    ]
+  }
+}
