@@ -229,7 +229,6 @@
       ],
       [
         {},
-        null,
         [],
         "invalid",
         "",
@@ -541,7 +540,6 @@
       ],
       [
         {},
-        null,
         "edge"
       ],
       "['\\' OR \\'1\\'=\\'1']",
@@ -552,8 +550,7 @@
         }
       ],
       [
-        {},
-        null
+        {}
       ],
       "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
       [
@@ -1189,7 +1186,6 @@
         }
       ],
       [
-        null,
         "",
         "a",
         [
@@ -1208,9 +1204,7 @@
       ],
       [
         [],
-        [
-          null
-        ],
+        [],
         [
           true
         ]
@@ -1218,7 +1212,6 @@
       "['\\'' OR ''1''=''1', '<script>alert(1)</script>', '../../../../../etc/passwd', '; rm -rf /']",
       [],
       [
-        null,
         "",
         "a",
         "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
@@ -1240,18 +1233,13 @@
       ],
       [
         [],
-        [
-          null
-        ],
+        [],
         [
           "",
           " ",
           "\t"
         ],
-        [
-          Infinity,
-          -Infinity
-        ]
+        []
       ],
       "['\\' OR \\'1\\'=\\'1', '<script>alert(1)</script>', '../../../etc/passwd', '; rm -rf /']",
       [

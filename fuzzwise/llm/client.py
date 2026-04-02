@@ -123,7 +123,7 @@ class OllamaClient:
                 "temperature": self.temperature,
                 "top_p": self.top_p,
                 "num_predict": max_tokens,
-                "stop": ["\n\n", "Value:", "```"],  # Stop at natural boundaries
+                "stop": ["Value:", "```"],  # Stop at natural boundaries
             }
         }
 
