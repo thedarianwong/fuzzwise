@@ -77,6 +77,9 @@ Wait a few seconds, then verify Petstore is up:
 
 ```bash
 curl http://localhost:8080/api/v3/openapi.json | python3 -m json.tool | head -5
+OR
+curl.exe -s http://localhost:8080/api/v3/openapi.json | python -m json.tool | Select-Object -First 5
+for Windows
 ```
 
 ### 4. (Config B/C only) Start Ollama
