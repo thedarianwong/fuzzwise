@@ -103,6 +103,10 @@ fuzzwise run \
   --strategy dictionary \
   --explorer bfs \
   --config-label config_a_baseline
+
+# Config B - with pre generated
+fuzzwise run --spec data/specs/petstore.yaml --target http://localhost:8080/api/v3 --strategy llm_pregenerated --explorer bfs --llm-payloads data/llm_payloads/llm_payloads_qwen2.5_7b.json --config-label config_b_llm_pregenerated
+
 ```
 
 ### All flags
