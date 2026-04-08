@@ -253,8 +253,15 @@ def cmd_run(args: argparse.Namespace) -> int:
     elif args.explorer == "bfs_fast":
         explorer = BFSExplorer(max_sequence_length=args.max_sequence_length, bfs_fast=True)
     elif args.explorer == "llm_guided":
-        console.print("[red]LLM-guided explorer not yet implemented — use --explorer bfs[/]")
-        return 1
+        from fuzzwise.fuzzer.llm_explorer import LLMGuidedExplorer
+        llm_model = getattr(args, 'llm_model', None) or os.getenv('LLM_MODEL', 'qwen2.5:7b')
+        ollama_host = getattr(args, 'ollama_host', None) or os.getenv('OLLAMA_HOST', 'http://localhost:11434')
+        
+        explorer = LLMGuidedExplorer(
+            model=llm_model,
+            base_url=ollama_host
+        )
+        console.print(f"[green]✓[/] Initialized LLM-Guided Explorer (model={llm_model})")
     else:
         console.print(f"[red]Unknown explorer: {args.explorer}[/]")
         return 1
