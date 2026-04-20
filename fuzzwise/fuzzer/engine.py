@@ -107,6 +107,16 @@ class FuzzEngine:
             self._log_file.close()
 
         result = self._state.summary()
+
+        # Wire in LLM call counts from explorer (Config C/D) and strategy (B-iterative)
+        llm_calls = 0
+        if hasattr(self._explorer, "llm_call_count"):
+            llm_calls += self._explorer.llm_call_count
+        if hasattr(self._strategy, "metrics") and isinstance(self._strategy.metrics, dict):
+            llm_calls += self._strategy.metrics.get("llm_calls", 0)
+        if llm_calls:
+            result = result.model_copy(update={"llm_call_count": llm_calls})
+
         self._write_result_json(result)
         logger.info(
             "Campaign %s done: %d requests, %d bugs, %.1fs",

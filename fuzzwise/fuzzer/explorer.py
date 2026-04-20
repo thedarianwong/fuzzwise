@@ -129,8 +129,9 @@ class BFSExplorer(BaseExplorer):
         appended_endpoints: set[str] = set()
         new_entries: list[tuple[list[str], str]] = []
 
+        target_len = self._current_generation - 1
         for seq in state.valid_sequences:
-            if len(seq) >= self._max_length:
+            if len(seq) != target_len:
                 continue
             for endpoint in bfs_order:
                 if self._bfs_fast and endpoint.operation_id in appended_endpoints:
