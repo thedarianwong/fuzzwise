@@ -32,6 +32,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 import jsonschema
@@ -106,6 +107,16 @@ class FuzzEngine:
             self._log_file.close()
 
         result = self._state.summary()
+
+        # Wire in LLM call counts from explorer (Config C/D) and strategy (B-iterative)
+        llm_calls = 0
+        if hasattr(self._explorer, "llm_call_count"):
+            llm_calls += self._explorer.llm_call_count
+        if hasattr(self._strategy, "metrics") and isinstance(self._strategy.metrics, dict):
+            llm_calls += self._strategy.metrics.get("llm_calls", 0)
+        if llm_calls:
+            result = result.model_copy(update={"llm_call_count": llm_calls})
+
         self._write_result_json(result)
         logger.info(
             "Campaign %s done: %d requests, %d bugs, %.1fs",
@@ -346,9 +357,11 @@ class FuzzEngine:
                     body_p[param.name] = val
 
         # Substitute path parameters into the URL template
+        # URL-encode values so non-printable/special chars are valid in the URL
+        # (the server still receives the decoded value)
         url_path = endpoint.path
         for name, value in path_p.items():
-            url_path = url_path.replace(f"{{{name}}}", str(value))
+            url_path = url_path.replace(f"{{{name}}}", quote(str(value), safe=""))
 
         full_url = self._config.target_base_url.rstrip("/") + url_path
 

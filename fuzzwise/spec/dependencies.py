@@ -45,6 +45,7 @@ class DependencyGraph:
         self._endpoints = endpoints
         self._endpoint_map: dict[str, Endpoint] = {e.operation_id: e for e in endpoints}
         self._edges = edges
+        self._bfs_order_cache: list[Endpoint] | None = None
 
     @property
     def edges(self) -> list[DependencyEdge]:
@@ -82,9 +83,14 @@ class DependencyGraph:
         dependencies are all roots, etc. Within each layer, sorted by
         operation_id for determinism.
 
-        If the graph contains cycles (unusual but possible), the lowest-
-        confidence edge in the cycle is removed to break it, with a warning.
+        If the graph contains cycles (unusual but possible), remaining nodes
+        are appended in sorted order with a one-time warning.
+
+        Result is cached — safe to call repeatedly with no performance penalty.
         """
+        if self._bfs_order_cache is not None:
+            return self._bfs_order_cache
+
         # Build in-degree map and adjacency list (producer → set of consumers)
         in_degree: dict[str, int] = {e.operation_id: 0 for e in self._endpoints}
         adj: dict[str, set[str]] = {e.operation_id: set() for e in self._endpoints}
@@ -123,6 +129,7 @@ class DependencyGraph:
                 if op_id in self._endpoint_map:
                     order.append(self._endpoint_map[op_id])
 
+        self._bfs_order_cache = order
         return order
 
     def summary(self) -> str:

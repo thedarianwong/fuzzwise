@@ -62,7 +62,13 @@ def parse_spec(spec_path: str | Path) -> list[Endpoint]:
     if not isinstance(spec, dict):
         raise ValueError(f"Spec file did not parse to a dict: {path}")
 
-    schema_registry = spec.get("components", {}).get("schemas", {})
+    # Support both OAS3 (components.schemas) and Swagger 2.0 (definitions)
+    schema_registry = (
+        spec.get("components", {}).get("schemas", {})
+        or spec.get("definitions", {})
+    )
+    # Swagger 2.0 top-level response definitions (e.g. #/responses/Foo)
+    responses_registry = spec.get("responses", {})
     endpoints: list[Endpoint] = []
 
     for path_str, path_item in spec.get("paths", {}).items():
@@ -72,7 +78,9 @@ def parse_spec(spec_path: str | Path) -> list[Endpoint]:
             operation = path_item.get(method)
             if operation is None:
                 continue
-            endpoint = _parse_operation(path_str, method.upper(), operation, schema_registry)
+            endpoint = _parse_operation(
+                path_str, method.upper(), operation, schema_registry, responses_registry
+            )
             endpoints.append(endpoint)
 
     logger.info("Parsed %d endpoints from %s", len(endpoints), path)
@@ -99,36 +107,47 @@ def _synthesize_operation_id(method: str, path: str) -> str:
 
 def resolve_ref(ref: str, registry: dict[str, Any]) -> dict[str, Any]:
     """
-    Resolve an internal $ref of the form '#/components/schemas/Foo'.
+    Resolve an internal $ref of the form '#/components/schemas/Foo' (OAS3)
+    or '#/definitions/Foo' (Swagger 2.0).
 
-    Only internal refs are supported. External file refs raise NotImplementedError.
+    Only internal schema refs are supported. External file refs raise NotImplementedError.
 
     Args:
-        ref:      The $ref string, e.g. '#/components/schemas/Pet'.
-        registry: The components.schemas dict from the spec.
+        ref:      The $ref string.
+        registry: The schemas/definitions dict from the spec.
 
     Returns:
         The resolved schema dict.
     """
-    if not ref.startswith("#/components/schemas/"):
-        raise NotImplementedError(f"Only internal $refs are supported, got: {ref!r}")
-    schema_name = ref.split("/")[-1]
-    if schema_name not in registry:
-        logger.warning("$ref '%s' not found in components/schemas — treating as empty object", ref)
-        return {"type": "object"}
-    return dict(registry[schema_name])
+    if ref.startswith("#/components/schemas/") or ref.startswith("#/definitions/"):
+        schema_name = ref.split("/")[-1]
+        if schema_name not in registry:
+            logger.warning("$ref '%s' not found in registry — treating as empty object", ref)
+            return {"type": "object"}
+        return dict(registry[schema_name])
+    raise NotImplementedError(f"Only internal schema $refs are supported, got: {ref!r}")
 
 
-def _resolve_schema(schema: Any, registry: dict[str, Any]) -> dict[str, Any]:
-    """Recursively resolve $ref in a schema dict."""
+def _resolve_schema(
+    schema: Any,
+    registry: dict[str, Any],
+    _seen: frozenset[str] | None = None,
+) -> dict[str, Any]:
+    """Recursively resolve $ref in a schema dict. Cycle detection via _seen."""
+    if _seen is None:
+        _seen = frozenset()
     if not isinstance(schema, dict):
         return {}
     if "$ref" in schema:
-        return _resolve_schema(resolve_ref(schema["$ref"], registry), registry)
+        ref = schema["$ref"]
+        if ref in _seen:
+            # Circular reference — return placeholder to break the cycle
+            return {"type": "object"}
+        return _resolve_schema(resolve_ref(ref, registry), registry, _seen | {ref})
     if "allOf" in schema:
         merged: dict[str, Any] = {}
         for sub in schema["allOf"]:
-            resolved = _resolve_schema(sub, registry)
+            resolved = _resolve_schema(sub, registry, _seen)
             # Merge properties
             merged.setdefault("properties", {}).update(resolved.get("properties", {}))
             # Merge required lists
@@ -143,17 +162,17 @@ def _resolve_schema(schema: Any, registry: dict[str, Any]) -> dict[str, Any]:
         branches = schema[key]
         if branches:
             logger.warning("'%s' schema — taking first branch only", key)
-            return _resolve_schema(branches[0], registry)
+            return _resolve_schema(branches[0], registry, _seen)
         return {}
     # Recursively resolve nested properties
     result = dict(schema)
     if "properties" in result:
         result["properties"] = {
-            k: _resolve_schema(v, registry)
+            k: _resolve_schema(v, registry, _seen)
             for k, v in result["properties"].items()
         }
     if "items" in result:
-        result["items"] = _resolve_schema(result["items"], registry)
+        result["items"] = _resolve_schema(result["items"], registry, _seen)
     return result
 
 
@@ -198,32 +217,25 @@ def _parse_parameter(param_dict: dict[str, Any], registry: dict[str, Any]) -> Pa
     )
 
 
-def _parse_body_params(
-    request_body: dict[str, Any],
+def _flatten_body_schema(
+    schema: dict[str, Any],
     registry: dict[str, Any],
+    required: bool = False,
 ) -> list[Parameter]:
     """
-    Flatten a requestBody into a list of body Parameter objects.
+    Flatten a resolved schema dict into a list of body Parameter objects.
 
-    Only application/json content type is processed. Each property in the
-    schema becomes one Parameter with location=BODY.
+    Handles two cases:
+    - Array schema: emit a single synthetic "_body" parameter
+    - Object schema: flatten each property into its own Parameter
     """
-    if not request_body:
-        return []
-
-    content = request_body.get("content", {})
-    json_content = content.get("application/json", {})
-    schema = _resolve_schema(json_content.get("schema", {}), registry)
-
-    # Array-typed requestBody: the whole body is a list, not a dict of properties.
-    # Add a synthetic "_body" parameter so the engine sends a proper JSON array.
     if schema.get("type") == "array":
         items_schema = schema.get("items", {})
         return [Parameter(
             name="_body",
             location=ParameterLocation.BODY,
             schema_type="array",
-            required=request_body.get("required", False),
+            required=required,
             item_type=_extract_type(_resolve_schema(items_schema, registry)),
         )]
 
@@ -250,16 +262,36 @@ def _parse_body_params(
             format=resolved_prop.get("format"),
             item_type=_extract_type(resolved_prop.get("items", {})) if schema_type == "array" else None,
         ))
-
     return params
+
+
+def _parse_body_params(
+    request_body: dict[str, Any],
+    registry: dict[str, Any],
+) -> list[Parameter]:
+    """
+    Flatten an OAS3 requestBody into a list of body Parameter objects.
+
+    Only application/json content type is processed.
+    """
+    if not request_body:
+        return []
+    content = request_body.get("content", {})
+    json_content = content.get("application/json", {})
+    schema = _resolve_schema(json_content.get("schema", {}), registry)
+    return _flatten_body_schema(schema, registry, required=request_body.get("required", False))
 
 
 def _parse_response_schemas(
     responses: dict[str, Any],
     registry: dict[str, Any],
+    responses_registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Extract and resolve response schemas keyed by status code string.
+
+    Supports both OAS3 (content.application/json.schema) and
+    Swagger 2.0 (schema directly on response object, $ref to #/responses/).
 
     Returns a dict like {"200": {json_schema}, "404": {json_schema}}.
     Status codes with no declared schema are omitted.
@@ -268,12 +300,20 @@ def _parse_response_schemas(
     for status_code, response_obj in responses.items():
         if not isinstance(response_obj, dict):
             continue
+        # Resolve Swagger 2.0 response $refs (e.g. #/responses/AccessToken)
         if "$ref" in response_obj:
-            # Response $refs are uncommon in Petstore-style specs; skip for now
-            continue
+            if not responses_registry:
+                continue
+            ref_name = response_obj["$ref"].split("/")[-1]
+            response_obj = responses_registry.get(ref_name, {})
+        # OAS3: content.application/json.schema
+        schema = None
         content = response_obj.get("content", {})
-        json_content = content.get("application/json", {})
-        schema = json_content.get("schema")
+        if content:
+            schema = content.get("application/json", {}).get("schema")
+        # Swagger 2.0 fallback: schema directly on response object
+        if schema is None:
+            schema = response_obj.get("schema")
         if schema:
             result[str(status_code)] = _resolve_schema(schema, registry)
     return result
@@ -284,16 +324,20 @@ def _parse_operation(
     method: str,
     operation: dict[str, Any],
     registry: dict[str, Any],
+    responses_registry: dict[str, Any] | None = None,
 ) -> Endpoint:
     """Parse one OpenAPI operation object into an Endpoint."""
     operation_id = operation.get("operationId") or _synthesize_operation_id(method, path)
 
     # Parse parameters (path, query, header)
+    # Skip in:body and in:formData — handled separately below
     path_params: list[Parameter] = []
     query_params: list[Parameter] = []
     header_params: list[Parameter] = []
 
     for param_dict in operation.get("parameters", []):
+        if isinstance(param_dict, dict) and param_dict.get("in") in ("body", "formData"):
+            continue
         param = _parse_parameter(param_dict, registry)
         if param is None:
             continue
@@ -304,11 +348,21 @@ def _parse_operation(
         elif param.location == ParameterLocation.HEADER:
             header_params.append(param)
 
-    # Parse request body
+    # Parse request body — OAS3 requestBody or Swagger 2.0 in:body parameter
     body_params = _parse_body_params(operation.get("requestBody", {}), registry)
+    if not body_params:
+        for param_dict in operation.get("parameters", []):
+            if isinstance(param_dict, dict) and param_dict.get("in") == "body":
+                schema = _resolve_schema(param_dict.get("schema", {}), registry)
+                body_params = _flatten_body_schema(
+                    schema, registry, required=param_dict.get("required", False)
+                )
+                break
 
     # Parse response schemas
-    response_schemas = _parse_response_schemas(operation.get("responses", {}), registry)
+    response_schemas = _parse_response_schemas(
+        operation.get("responses", {}), registry, responses_registry
+    )
 
     return Endpoint(
         operation_id=operation_id,
